@@ -1,5 +1,6 @@
 (defpackage 24-advent-lisp
   (:export #:main)
+  (:nicknames :24-adv)
   (:use #:cl))
 
 (in-package #:24-advent-lisp)
@@ -9,17 +10,19 @@
   (main))
 
 (defparameter *solutions*
-  #((list 24-advent-day1:parse-day-input 24-advent-day1:calculate-answer)))
+  #((list 24-adv-1:parse-day-input 24-adv-1:calculate-answer 24-adv-1:calculate-answer-2)))
 
 (defun get-parse-fn (day-number)
-  (second (aref *solutions* (- 1 day-number))))
+  (elt (elt *solutions* (- 1 day-number)) 1))
 
 (defun read-parse-input (day-number)
-  (let ((parse-fn (get-parse-fn day-number)))
-    (with-open-file (file-stream (format nil "../inputs/day~D.txt" day-number))
+  (let ((parse-fn (get-parse-fn day-number))
+        (file-name (format nil "inputs/day~D.txt" day-number)))
+    (with-open-file (file-stream (asdf:system-relative-pathname "24-advent-lisp" file-name))
       (apply parse-fn (list file-stream)))))
 
 (defun elapsed-since (real-time)
+  (declare (type fixnum real-time))
   (format nil "~,4Fs"
           (/ (- (get-internal-real-time) real-time)
              (float internal-time-units-per-second))))
@@ -31,8 +34,18 @@
     (format t "'~A' took: ~A~&" what (elapsed-since start))
     result))
 
+(defun read-number (request)
+  (declare (type simple-string request))
+  (write-string request)
+  (finish-output)
+  (parse-integer (read-line)))
+
 (defun main ()
   (setf lparallel:*kernel* (lparallel:make-kernel 4))
-  (let* ((parsed-input (time-exec "parsing" #'read-parse-input 1))
-         (final-answer (time-exec "calculating" #'24-advent-day1:calculate-answer parsed-input)))
-    (format t "Answer is ~A~&" final-answer)))
+  (let* ((chosen-day (read-number "Please enter a number: "))
+         (day-fns (elt *solutions* (- 1 chosen-day)))
+         (parsed-input (time-exec "parsing input" #'read-parse-input chosen-day))
+         (final-answer (time-exec "calculating part 1" (elt day-fns 2) parsed-input))
+         (second-answer (time-exec "calculating part 2" (elt day-fns 3) parsed-input)))
+    (format t "Answer is ~A~&" final-answer)
+    (format t "Second answ is ~A~&" second-answer)))
