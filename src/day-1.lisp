@@ -17,8 +17,9 @@
     (list (cons x f-seq)
           (cons y s-seq))))
 
+(declaim (ftype (function ((or null string)) boolean) not-blank?)
+         (inline not-blank?))
 (defun not-blank? (x)
-  ;; (declare (type (or null string) x))
   (and x (not (string= x ""))))
 
 (declaim (ftype (function (fixnum fixnum) fixnum) calc-diff)
@@ -49,6 +50,8 @@
         (reduce #'+)))))
 
 (defun calculate-answer (seqs)
+  (declare (optimize (speed 3)
+                     (safety 2)))
   (destructuring-bind (f-seq s-seq) seqs
     (plet ((sf-seq (sort (copy-list f-seq) #'>))
            (ss-seq (sort (copy-list s-seq) #'>)))

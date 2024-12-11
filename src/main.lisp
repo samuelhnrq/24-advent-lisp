@@ -10,10 +10,11 @@
   (main))
 
 (defparameter *solutions*
-  #((list 24-adv-1:parse-day-input 24-adv-1:calculate-answer 24-adv-1:calculate-answer-2)))
+  (list (list #'24-adv-1:parse-day-input #'24-adv-1:calculate-answer #'24-adv-1:calculate-answer-2)
+        (list #'24-adv-2:parse-day-input #'24-adv-2:calculate-answer #'24-adv-2:calculate-answer-2)))
 
 (defun get-parse-fn (day-number)
-  (elt (elt *solutions* (- 1 day-number)) 1))
+  (nth 0 (nth (- day-number 1) *solutions*)))
 
 (defun read-parse-input (day-number)
   (let ((parse-fn (get-parse-fn day-number))
@@ -43,9 +44,9 @@
 (defun main ()
   (setf lparallel:*kernel* (lparallel:make-kernel 4))
   (let* ((chosen-day (read-number "Please enter a number: "))
-         (day-fns (elt *solutions* (- 1 chosen-day)))
+         (day-fns (nth (- chosen-day 1) *solutions*))
          (parsed-input (time-exec "parsing input" #'read-parse-input chosen-day))
-         (final-answer (time-exec "calculating part 1" (elt day-fns 2) parsed-input))
-         (second-answer (time-exec "calculating part 2" (elt day-fns 3) parsed-input)))
+         (final-answer (time-exec "calculating part 1" (nth 1 day-fns) parsed-input))
+         (second-answer (time-exec "calculating part 2" (nth 2 day-fns) parsed-input)))
     (format t "Answer is ~A~&" final-answer)
     (format t "Second answ is ~A~&" second-answer)))

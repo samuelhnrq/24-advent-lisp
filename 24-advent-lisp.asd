@@ -8,7 +8,9 @@
   :components ((:module "src"
                 :components
                 ((:file "day-1")
-                 (:file "main" :depends-on ("day-1")))))
+                 (:file "day-2")
+                 (:file "main" :depends-on ("day-1"
+                                            "day-2")))))
   :description ""
   :build-operation "program-op"
   :build-pathname "24-advent-lisp"
@@ -19,9 +21,12 @@
   :author ""
   :license ""
   :depends-on ("24-advent-lisp"
-               "rove")
+               "fiveam")
   :components ((:module "tests"
                 :components
-                ((:file "main"))))
+                ((:file "day-1")
+                 (:file "day-2"))))
   :description "Test system for 24-advent-lisp"
-  :perform (test-op (op c) (symbol-call :rove :run c)))
+  :perform (test-op (op c)
+                    (symbol-call :fiveam :run!)))
+;; (find-symbol* :24-adv/test-1 :24-adv/test-2)
