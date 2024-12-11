@@ -16,7 +16,7 @@
 (declaim (ftype (function (string) list) parse-line)
          (inline parse-line))
 (defun parse-line (line)
-  (if (blank? line)
+  (if (blank? (string-trim " " line))
       nil
       (mapcar #'parse-integer (split "\\s+" line))))
 
@@ -28,13 +28,13 @@
       (cons next acc)))
 
 (defun parse-day-input (buffer &optional acc)
-  (let ((current-line (string-trim " " (read-line buffer nil "EOF"))))
+  (let ((current-line (read-line buffer nil "EOF")))
     (if (equal "EOF" current-line)
         (reverse acc)
         (parse-day-input buffer
                          (->> current-line
-                           (parse-line)
-                           (append-inputs acc))))))
+                              (parse-line)
+                              (append-inputs acc))))))
 
 (defun calculate-answer-2 (seqs)
   nil)

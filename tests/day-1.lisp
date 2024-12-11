@@ -8,7 +8,7 @@
 (def-suite* first-day
   :description "first day")
 
-(defconstant day1-example
+(defparameter day1-example
   "3   4
 4   3
 2   5
@@ -16,7 +16,7 @@
 3   9
 3   3")
 
-(defconstant parsed-example
+(defparameter parsed-example
   '((3 3 1 2 4 3) (3 9 3 5 3 4)))
 
 (setf lparallel:*kernel* (lparallel:make-kernel 1))
